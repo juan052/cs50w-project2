@@ -1,3 +1,4 @@
 Flask
 Flask-SocketIO
 python-dotenv==0.10.5
+Gunicorn
