@@ -1,22 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Projec 2</title>
-    </head>
-    <body>
-        <button id="join">Join Room</button>
 
-        <div id="root"></div>
+<head>
+    <title>CHAT</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <form id="form-message" action="">
-            <input id="message-input" type="text" />
-            <button id="send-message" type="button">Enviar</button>
-        </form>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
 
-        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
-        <script src="{{url_for('static', filename='js/index.js')}}"></script>
-    </body>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-----------------------------Socket---------------------------------->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+    <script src="{{ url_for('static',filename='js/index.js')}}"></script>
+</head>
+
+<body>
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar">
+            <div class="p-4 pt-5">
+                <a href="#" class="img logo rounded-circle mb-5"
+                    style="background-image: url(https://images.pagina12.com.ar/styles/focal_3_2_960x640/public/2023-01/689497-48817-lionel-2520messi-2520.jpg?h=fadd0d06&itok=-Ppawvfa);"></a>
+                <h5 class="text-danger">Hola,{{session["Username"]}}</h5>
+                <ul class="list-unstyled components mb-5">
+                    <li>
+                        <h4><strong style="color: blanchedalmond;">Canales</strong>&nbsp;<button type="button"
+                                class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                +
+                            </button>
+                        </h4>
+                    </li>
+                    <li id="listaCanal">
+                        {%for Channelss in Channels %}
+                        <a onclick="selectCanal('{{Channelss}}');" class="nav-link active selectCanal">
+                            {{Channelss}}
+                        </a>
+                        <hr class="my-1">
+                        {%endfor%}
+                    </li>
+                </ul>
+                <div class="footer">
+                    <p>
+                        Copyright
+                        <script>document.write(new Date().getFullYear());</script>
+                        Todos los derechos reservados <i class="fa fa-github" aria-hidden="true"></i> <a
+                            href="https://github.com/juan052" target="_blank">Github</a>
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" onclick="limpiarLocalStorage();" href="/logout">Cerrar sesión</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <span class="navbar-brand mb-2 h1" style="color: black;" id="Room"></span>
+            <div class="container-fluid overflow-auto" style="height: 86vh;">
+                <div id="log" class="sl__chat__layout container-fluid text-wrap" style="height: auto;">
+                    <div data-from="{from}" data-id="{messageId}" id="BoxMessage1" class="text-wrap">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group container">
+                <button class="btn btn-primary" id="emoji-button">Emote 😀</button>
+                <input type="text" class="form-control" id="Mensaje" name="" placeholder="Escribe un mensaje"
+                    data-emojiable="true" data-emoji-input="unicode">
+                <button type="submit" class="btn btn-primary" id="enviar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-send" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                    </svg> Enviar
+                </button>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-dark" id="exampleModalLabel"><strong>Crear un nuevo
+                            canal</strong></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                </div>
+                <div class="modal-body text-dark">
+                    Nombre del Canal
+                    <input type="text" id="new_channels" name="new_channels" class="form-control" placeholder="Canal">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="Channel_NEW">Save
+                        changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
+    <!-- End emoji-picker   -->
+</body>
+
 </html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+
+
+    <link href="{{ url_for('static',filename='css/login.css')}}" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+
+
+
+<body>
+    <div class="login">
+        <div class="image">
+            <i class="zmdi zmdi-account-circle  zmdi-hc-5x"></i>
+            <h2>Inicie seción</h2>
+        </div>
+        <form action="/login" method="POST" id="Saves-User">
+            <div class="form-icon">
+                <label for="Usuario">Usuario</label>
+                <div class="Datos_request">
+                    <input type="text" name="Username" id="Username" required>
+                    <span></span>
+                </div>
+                <span class="zmdi zmdi-account"></span>
+            </div>
+            
+            <button type="submit">Aceptar</button>
+        </form>
+    </div>
+
+</body>
+<script src="{{ url_for('static',filename='js/particles.js')}}"></script>
+<script src="{{ url_for('static',filename='js/login.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script src="https://cdn.socket.io/4.2.0/socket.io.min.js"
+    integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj"
+    crossorigin="anonymous"></script>
+
+</html>
